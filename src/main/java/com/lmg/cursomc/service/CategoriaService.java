@@ -18,97 +18,53 @@ import com.lmg.cursomc.service.exception.ObjectNotFoundException;
 
 @Service
 public class CategoriaService {
-	
+
 	@Autowired
 	CategoriaRepository repository;
-	
+
 	public Categoria find(Integer id) {
 		Optional<Categoria> categoria = repository.findById(id);
-		return categoria.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado ID: " + id
-				+ ", Tipo" + Categoria.class.getName()));
-	}	
-	
+		return categoria.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado ID: " + id + ", Tipo" + Categoria.class.getName()));
+	}
+
 	public Categoria insert(Categoria obj) {
 		obj.setId(null);
 		return repository.save(obj);
 	}
 
 	public Categoria update(Categoria obj) {
-		find(obj.getId());
-		return repository.save(obj);
+		Categoria newObjt = find(obj.getId());
+		updateData(newObjt, obj);
+		return repository.save(newObjt);
 	}
 
 	public void delete(Integer id) {
-		 find(id); // caso o id não exista ja despera a excessão
-		 try {
-			 repository.deleteById(id);
+		find(id); // caso o id não exista ja despera a excessão
+		try {
+			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível deletar uma categoria que contenha produtos vinculados. ID:  " 
-					+ id);
+			throw new DataIntegrityException(
+					"Não é possível deletar uma categoria que contenha produtos vinculados. ID:  " + id);
 		}
-		
+
 	}
 
 	public List<Categoria> findAll() {
 		return repository.findAll();
 	}
-	
-	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+
+	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repository.findAll(pageRequest);
 	}
-	
+
 	public Categoria fromDto(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
 	}
-	
-	
-	
-	
-	
+
+	private void updateData(Categoria newObjt, Categoria obj) {
+		newObjt.setNome(obj.getNome());
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
