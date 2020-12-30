@@ -1,5 +1,5 @@
 # Sistema de Pedidos - Back end
-# API Rest usando Java com Spring Boot
+* API Rest usando Java com Spring Boot
 Ferramentas utilizadas 
 - Spring Boot
 - JPA/Hibernate
