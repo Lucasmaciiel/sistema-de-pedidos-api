@@ -38,8 +38,8 @@ public class ProdutoResource {
 			@RequestParam(value="orderBy", defaultValue = "nome") String orderBy,
 			@RequestParam(value="direction", defaultValue = "ASC") String direction) { 
 		
-		List<Integer> ids = URL.decodeIntList(categorias);
 		String NomeDecoded = URL.decodeParam(nome);
+		List<Integer> ids = URL.decodeIntList(categorias);
 		
 		Page<Produto> list = service.search(NomeDecoded, ids, page, linesPerPage, orderBy, direction); 
 		 
