@@ -1,4 +1,4 @@
-package com.lmg.cursomc;
+package com.lmg.cursomc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
