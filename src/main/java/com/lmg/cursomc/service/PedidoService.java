@@ -20,15 +20,19 @@ import com.lmg.cursomc.service.exception.ObjectNotFoundException;
 public class PedidoService {
 	@Autowired
 	PedidoRepository repository;
+
 	@Autowired
 	BoletoService boletoService;
+
 	@Autowired
 	PagamentoRepository pagamentoRepository;
+
 	@Autowired
 	ProdutoService produtoService;
-//	
-//	@Autowired
-//	ProdutoRepository produtoRepository;
+
+	@Autowired
+	ClienteService clienteService;
+
 	@Autowired
 	ItemPedidoRepository itemPedidoRepository;
 	
@@ -42,6 +46,7 @@ public class PedidoService {
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
 		obj.setInstante(new Date());
+		obj.setCliente(clienteService.find(obj.getCliente().getId()));
 		obj.getPagamento().setEstadoPagamento(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		if(obj.getPagamento() instanceof PagamentoComBoleto) {
@@ -52,10 +57,12 @@ public class PedidoService {
 		pagamentoRepository.save(obj.getPagamento());
 		for(ItemPedido ip : obj.getItens()) {
 			ip.setDesconto(0.0);
+			ip.setProduto(produtoService.find(ip.getProduto().getId()));
 			ip.setPreco(produtoService.find(ip.getProduto().getId()).getPreco());
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
+		System.out.println(obj);
 		return obj;
 		
 		

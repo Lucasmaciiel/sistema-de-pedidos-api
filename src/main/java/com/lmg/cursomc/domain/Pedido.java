@@ -1,8 +1,11 @@
 package com.lmg.cursomc.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -133,10 +136,21 @@ public class Pedido implements Serializable {
 		return true;
 	}
 
-	
-	
-	
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("Pedido{");
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
-	
-	
+		sb.append("Pedido numero: ").append(getId());
+		sb.append(", Instante: ").append(simpleDateFormat.format(getInstante()));
+		sb.append(", Cliente: ").append(getCliente().getNome());
+		sb.append(", Situação do pagamento: ").append(getPagamento().getEstadoPagamento().getDescricao());
+		sb.append("\nDetalhes: \n");
+		for (ItemPedido ip: getItens()) {
+			sb.append(ip.toString());
+		}
+		sb.append("Valor total: ").append(nf.format(getValorTotal()));
+		return sb.toString();
+	}
 }
