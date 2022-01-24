@@ -1,6 +1,6 @@
 package com.lmg.cursomc.domain.enums;
 
-public enum TipoCliente {
+public enum TipoClienteEnum {
 	
 	PESSOAFISICA(1, "Pessoa física"),
 	PESSOAJURIDICA(2, "Pessoa Jurídica");
@@ -8,7 +8,7 @@ public enum TipoCliente {
 	private int codigo;
 	private String descricao;
 	
-	private TipoCliente(int codigo, String descricao) {
+	private TipoClienteEnum(int codigo, String descricao) {
 		this.codigo = codigo;
 		this.descricao = descricao;
 	}
@@ -21,12 +21,12 @@ public enum TipoCliente {
 		return descricao;
 	}
 	
-	public static TipoCliente toEnum(Integer codigo) {
+	public static TipoClienteEnum toEnum(Integer codigo) {
 		
 		if (codigo == null) {
 			return null;
 		}
-		for (TipoCliente x : TipoCliente.values()) {
+		for (TipoClienteEnum x : TipoClienteEnum.values()) {
 			if (codigo.equals(x.getCodigo())) {
 				return x;
 			}

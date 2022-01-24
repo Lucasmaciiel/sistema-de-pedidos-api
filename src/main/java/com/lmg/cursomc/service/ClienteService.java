@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lmg.cursomc.domain.Cidade;
 import com.lmg.cursomc.domain.Cliente;
 import com.lmg.cursomc.domain.Endereco;
-import com.lmg.cursomc.domain.enums.TipoCliente;
+import com.lmg.cursomc.domain.enums.TipoClienteEnum;
 import com.lmg.cursomc.dto.ClienteDTO;
 import com.lmg.cursomc.dto.ClienteNewDTO;
 import com.lmg.cursomc.repository.CidadeRepository;
@@ -84,7 +84,7 @@ public class ClienteService {
 
 	public Cliente fromDto(ClienteNewDTO objDto) {
 		Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
-				TipoCliente.toEnum(objDto.getTipoCliente()), pe.encode(objDto.getSenha()));
+				TipoClienteEnum.toEnum(objDto.getTipoCliente()), pe.encode(objDto.getSenha()));
 		
 		Optional<Cidade> codCidade = cidadeRepository.findById(objDto.getCidadeId());
 		

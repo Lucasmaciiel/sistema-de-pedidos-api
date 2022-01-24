@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lmg.cursomc.domain.ItemPedido;
 import com.lmg.cursomc.domain.PagamentoComBoleto;
 import com.lmg.cursomc.domain.Pedido;
-import com.lmg.cursomc.domain.enums.EstadoPagamento;
+import com.lmg.cursomc.domain.enums.EstadoPagamentoEnum;
 import com.lmg.cursomc.repository.ItemPedidoRepository;
 import com.lmg.cursomc.repository.PagamentoRepository;
 import com.lmg.cursomc.repository.PedidoRepository;
@@ -50,7 +50,7 @@ public class PedidoService {
 		obj.setId(null);
 		obj.setInstante(new Date());
 		obj.setCliente(clienteService.find(obj.getCliente().getId()));
-		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
+		obj.getPagamento().setEstado(EstadoPagamentoEnum.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		if(obj.getPagamento() instanceof PagamentoComBoleto) {
 			PagamentoComBoleto pgto = (PagamentoComBoleto) obj.getPagamento();

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
+import com.lmg.cursomc.domain.enums.PerfilEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ import com.lmg.cursomc.domain.PagamentoComBoleto;
 import com.lmg.cursomc.domain.PagamentoComCartao;
 import com.lmg.cursomc.domain.Pedido;
 import com.lmg.cursomc.domain.Produto;
-import com.lmg.cursomc.domain.enums.EstadoPagamento;
-import com.lmg.cursomc.domain.enums.TipoCliente;
+import com.lmg.cursomc.domain.enums.EstadoPagamentoEnum;
+import com.lmg.cursomc.domain.enums.TipoClienteEnum;
 import com.lmg.cursomc.repository.CategoriaRepository;
 import com.lmg.cursomc.repository.CidadeRepository;
 import com.lmg.cursomc.repository.ClienteRepository;
@@ -121,25 +122,32 @@ public class DBService {
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-		Cliente cli1 = new Cliente(null, "Maria Silva", "lucasmacielgois@gmail.com", "33366655588", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		Cliente cli1 = new Cliente(null, "Maria Silva", "lucasmacielgois@gmail.com", "05457871061", TipoClienteEnum.PESSOAFISICA, pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("1833617777", "1833618888"));
+
+		Cliente cli2 = new Cliente(null, "Ana costa", "anacosta@gmail.com", "21511735007", TipoClienteEnum.PESSOAFISICA, pe.encode("123"));
+		cli2.getTelefones().addAll(Arrays.asList("1833627076", "1833618111"));
+		cli2.addPerfil(PerfilEnum.ADMIN);
 
 		Endereco endereco1 = new Endereco(null, "Rua Flores", "300", "Apto 203", "Jardim", "38220834", cli1, c1);
 		Endereco endereco2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
-		cli1.getEnderecos().addAll(Arrays.asList(endereco1, endereco2));
+		Endereco endereco3 = new Endereco(null, "Avenida floriana", "106", null, "Centro", "38777013", cli2, c2);
 
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecoRepository.saveAll(Arrays.asList(endereco1, endereco2));
+		cli1.getEnderecos().addAll(Arrays.asList(endereco1, endereco2));
+		cli2.getEnderecos().addAll(Arrays.asList(endereco3));
+
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecoRepository.saveAll(Arrays.asList(endereco1, endereco2, endereco3));
 		
 		SimpleDateFormat  sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm" );
 		
 		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:17"), cli1, endereco1);
 		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, endereco2);
 		
-		PagamentoComCartao pgto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		PagamentoComCartao pgto1 = new PagamentoComCartao(null, EstadoPagamentoEnum.QUITADO, ped1, 6);
 		ped1.setPagamento(pgto1);
 		
-		PagamentoComBoleto pgto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		PagamentoComBoleto pgto2 = new PagamentoComBoleto(null, EstadoPagamentoEnum.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
 		ped2.setPagamento(pgto2);
 		
 		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));

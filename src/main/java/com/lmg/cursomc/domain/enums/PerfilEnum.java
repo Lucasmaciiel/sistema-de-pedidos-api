@@ -1,15 +1,14 @@
 package com.lmg.cursomc.domain.enums;
 
-public enum EstadoPagamento {
+public enum PerfilEnum {
 
-	PENDENTE(1, "Pendente"),
-	QUITADO(2, "Quitado"), 
-	CANCELADO(3, "Cancelado");
+	ADMIN(1, "ROLE_ADMIN"),
+	CLIENTE(2, "ROLE_CLIENTE");
 
 	private int codigo;
 	private String descricao;
 
-	private EstadoPagamento(int codigo, String descricao) {
+	private PerfilEnum(int codigo, String descricao) {
 		this.codigo = codigo;
 		this.descricao = descricao;
 	}
@@ -30,11 +29,11 @@ public enum EstadoPagamento {
 		this.descricao = descricao;
 	}
 
-	public static EstadoPagamento toEnum(Integer cod) {
+	public static PerfilEnum toEnum(Integer cod) {
 		if (cod == null) {
 			return null;
 		}
-		for (EstadoPagamento x : EstadoPagamento.values()) {
+		for (PerfilEnum x : PerfilEnum.values()) {
 			if (cod.equals(x.codigo)) {
 				return x;
 			}

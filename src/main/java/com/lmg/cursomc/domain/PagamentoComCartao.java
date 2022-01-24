@@ -3,7 +3,7 @@ package com.lmg.cursomc.domain;
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.lmg.cursomc.domain.enums.EstadoPagamento;
+import com.lmg.cursomc.domain.enums.EstadoPagamentoEnum;
 
 @Entity
 @JsonTypeName("pagamentoComCartao")
@@ -16,7 +16,7 @@ public class PagamentoComCartao extends Pagamento {
 	public PagamentoComCartao() {
 	}
 
-	public PagamentoComCartao(Integer id, EstadoPagamento estadoPagamento, Pedido pedido, Integer numeroParcelas) {
+	public PagamentoComCartao(Integer id, EstadoPagamentoEnum estadoPagamento, Pedido pedido, Integer numeroParcelas) {
 		super(id, estadoPagamento, pedido);
 		this.numeroParcelas = numeroParcelas;
 	}

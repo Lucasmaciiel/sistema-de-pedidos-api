@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.lmg.cursomc.domain.enums.EstadoPagamento;
+import com.lmg.cursomc.domain.enums.EstadoPagamentoEnum;
 
 @Entity
 @JsonTypeName("pagamentoComBoleto")
@@ -21,7 +21,7 @@ public class PagamentoComBoleto extends Pagamento{
 	
 	public PagamentoComBoleto() {}
 
-	public PagamentoComBoleto(Integer id, EstadoPagamento estadoPagamento, Pedido pedido, Date dataVencimento, Date dataPagamento) {
+	public PagamentoComBoleto(Integer id, EstadoPagamentoEnum estadoPagamento, Pedido pedido, Date dataVencimento, Date dataPagamento) {
 		super(id, estadoPagamento, pedido);
 		this.dataVencimento = dataVencimento;
 		this.dataPagamento = dataPagamento;
