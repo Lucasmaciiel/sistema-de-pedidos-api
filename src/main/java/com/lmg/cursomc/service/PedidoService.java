@@ -19,22 +19,25 @@ import com.lmg.cursomc.service.exception.ObjectNotFoundException;
 @Service
 public class PedidoService {
 	@Autowired
-	PedidoRepository repository;
+	private PedidoRepository repository;
 
 	@Autowired
-	BoletoService boletoService;
+	private BoletoService boletoService;
 
 	@Autowired
-	PagamentoRepository pagamentoRepository;
+	private PagamentoRepository pagamentoRepository;
 
 	@Autowired
-	ProdutoService produtoService;
+	private ProdutoService produtoService;
 
 	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
 
 	@Autowired
-	ItemPedidoRepository itemPedidoRepository;
+	private ItemPedidoRepository itemPedidoRepository;
+
+	@Autowired
+	private EmailService emailService;
 	
 	public Pedido find(Integer id) {
 		Optional<Pedido> pedido = repository.findById(id);
@@ -62,10 +65,9 @@ public class PedidoService {
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
-		System.out.println(obj);
+		emailService.sendOrderConfirmationEmail(obj);
 		return obj;
-		
-		
+
 	}
 }
 
