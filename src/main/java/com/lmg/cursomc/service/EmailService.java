@@ -1,5 +1,6 @@
 package com.lmg.cursomc.service;
 
+import com.lmg.cursomc.domain.Cliente;
 import com.lmg.cursomc.domain.Pedido;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -16,4 +17,5 @@ public interface EmailService {
 
     void sendHtmlEmail(MimeMessage msg) throws MessagingException;
 
+    void sendNewPasswordEmail(Cliente cliente, String newPass);
 }
