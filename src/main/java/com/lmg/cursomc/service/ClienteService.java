@@ -3,6 +3,9 @@ package com.lmg.cursomc.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.lmg.cursomc.domain.enums.PerfilEnum;
+import com.lmg.cursomc.security.UserSS;
+import com.lmg.cursomc.service.exception.AuthorizationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -40,7 +43,14 @@ public class ClienteService {
 	private BCryptPasswordEncoder pe;
 
 	public Cliente find(Integer id) {
+		UserSS usuarioLogado = UserService.authenticated();
+
+		if (usuarioLogado == null || !usuarioLogado.hasRole(PerfilEnum.ADMIN) && !usuarioLogado.getId().equals(id)){
+				throw new AuthorizationException("Acesso negado");
+		}
+
 		Optional<Cliente> cliente = repository.findById(id);
+
 		return cliente.orElseThrow(() -> new ObjectNotFoundException(
 				"Cliente não encontrado ID: " + id + ", Tipo" + Cliente.class.getName()));
 	}
