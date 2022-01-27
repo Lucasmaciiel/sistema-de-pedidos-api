@@ -7,9 +7,9 @@ import com.lmg.cursomc.service.AuthService;
 import com.lmg.cursomc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ public class AuthResource {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/refresh_token", method = RequestMethod.POST)
+    @RequestMapping(value = "/refresh_token")
     public ResponseEntity<Void> refreshToken(HttpServletResponse response){
         UserSS user = UserService.authenticated();
         String token = jwtUtil.generateToken(user.getUsername());
@@ -38,7 +38,8 @@ public class AuthResource {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/forgot", method = RequestMethod.POST)
+    @RequestMapping(value = "/forgot")
+    @PostMapping
     public ResponseEntity<Void> forgot(@Valid @RequestBody EmailDTO objDto){
         authService.sendNewPassword(objDto.getEmail());
         return ResponseEntity.noContent().build();

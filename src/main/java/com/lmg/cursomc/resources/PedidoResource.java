@@ -1,11 +1,7 @@
 package com.lmg.cursomc.resources;
 
-import java.net.URI;
-
-import javax.validation.Valid;
-
-import com.lmg.cursomc.domain.Categoria;
-import com.lmg.cursomc.dto.CategoriaDTO;
+import com.lmg.cursomc.domain.Pedido;
+import com.lmg.cursomc.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.lmg.cursomc.domain.Pedido;
-import com.lmg.cursomc.service.PedidoService;
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping(value="/pedidos")

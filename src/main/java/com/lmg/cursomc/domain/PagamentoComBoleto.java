@@ -1,6 +1,7 @@
 package com.lmg.cursomc.domain;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 
@@ -42,7 +43,18 @@ public class PagamentoComBoleto extends Pagamento{
 	public void setDataPagamento(Date dataPagamento) {
 		this.dataPagamento = dataPagamento;
 	}
-	
-	
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		PagamentoComBoleto that = (PagamentoComBoleto) o;
+		return Objects.equals(dataVencimento, that.dataVencimento) && Objects.equals(dataPagamento, that.dataPagamento);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), dataVencimento, dataPagamento);
+	}
 }

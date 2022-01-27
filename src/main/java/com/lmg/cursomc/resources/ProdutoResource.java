@@ -43,7 +43,7 @@ public class ProdutoResource {
 		
 		Page<Produto> list = service.search(NomeDecoded, ids, page, linesPerPage, orderBy, direction); 
 		 
-		Page<ProdutoDTO> listDto = list.map(obj -> new ProdutoDTO(obj)); 
+		Page<ProdutoDTO> listDto = list.map(ProdutoDTO::new);
 		return ResponseEntity.ok().body(listDto);
 	}
 }

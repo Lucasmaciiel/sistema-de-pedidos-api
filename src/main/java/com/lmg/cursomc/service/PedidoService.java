@@ -1,19 +1,6 @@
 package com.lmg.cursomc.service;
 
-import java.util.Date;
-import java.util.Optional;
-
-import com.lmg.cursomc.domain.Categoria;
 import com.lmg.cursomc.domain.Cliente;
-import com.lmg.cursomc.security.UserSS;
-import com.lmg.cursomc.service.exception.AuthorizationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.lmg.cursomc.domain.ItemPedido;
 import com.lmg.cursomc.domain.PagamentoComBoleto;
 import com.lmg.cursomc.domain.Pedido;
@@ -21,7 +8,18 @@ import com.lmg.cursomc.domain.enums.EstadoPagamentoEnum;
 import com.lmg.cursomc.repository.ItemPedidoRepository;
 import com.lmg.cursomc.repository.PagamentoRepository;
 import com.lmg.cursomc.repository.PedidoRepository;
+import com.lmg.cursomc.security.UserSS;
+import com.lmg.cursomc.service.exception.AuthorizationException;
 import com.lmg.cursomc.service.exception.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PedidoService {

@@ -52,7 +52,7 @@ public class ClienteResource {
 	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO objDto, @PathVariable Integer id){
 		Cliente obj = service.fromDto(objDto);
 		obj.setId(id);
-		obj = service.update(obj);
+		service.update(obj);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -67,7 +67,7 @@ public class ClienteResource {
 	@RequestMapping(method=RequestMethod.GET) 
 	public ResponseEntity<List<ClienteDTO>> findAll() { // método que retorna uma lista de catetoriaDto
 		List<Cliente> list = service.findAll(); // busca a lista
-		List<ClienteDTO> listDto = list.stream().map(obj -> new ClienteDTO(obj)).collect(Collectors.toList()); // converte para dto
+		List<ClienteDTO> listDto = list.stream().map(ClienteDTO::new).collect(Collectors.toList()); // converte para dto
 		return ResponseEntity.ok().body(listDto);
 	}
 
@@ -81,7 +81,7 @@ public class ClienteResource {
 		
 		 Page<Cliente> list = service.findPage(page, linesPerPage, orderBy, direction); 
 		 
-		Page<ClienteDTO> listDto = list.map(obj -> new ClienteDTO(obj)); 
+		Page<ClienteDTO> listDto = list.map(ClienteDTO::new);
 		return ResponseEntity.ok().body(listDto);
 	}
 }

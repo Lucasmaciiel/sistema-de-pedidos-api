@@ -53,7 +53,7 @@ public class Cliente implements Serializable {
 
 	public Set<PerfilEnum> getPerfis() {
 		return perfis.stream()
-				.map(p -> PerfilEnum.toEnum(p))
+				.map(PerfilEnum::toEnum)
 				.collect(Collectors.toSet());
 	}
 
