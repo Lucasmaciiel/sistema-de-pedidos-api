@@ -1,5 +1,6 @@
 package com.lmg.cursomc.service;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ import com.lmg.cursomc.repository.ClienteRepository;
 import com.lmg.cursomc.repository.EnderecoRepository;
 import com.lmg.cursomc.service.exception.DataIntegrityException;
 import com.lmg.cursomc.service.exception.ObjectNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ClienteService {
@@ -38,6 +40,9 @@ public class ClienteService {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+
+	@Autowired
+	S3Service s3Service;
 
 	@Autowired
 	private BCryptPasswordEncoder pe;
@@ -118,5 +123,9 @@ public class ClienteService {
 	private void updateData(Cliente newObjt, Cliente obj) {
 		newObjt.setNome(obj.getNome());
 		newObjt.setEmail(obj.getEmail());
+	}
+
+	public URI uploadProfilePicture(MultipartFile multipartFile){
+		return s3Service.uploadFile(multipartFile);
 	}
 }
