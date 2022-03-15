@@ -1,5 +1,6 @@
 package com.lmg.cursomc.service;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import com.lmg.cursomc.domain.enums.PerfilEnum;
 import com.lmg.cursomc.security.UserSS;
 import com.lmg.cursomc.service.exception.AuthorizationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,111 +34,114 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ClienteService {
 
-	@Autowired
-	private ClienteRepository repository;
+    @Value("${img.prefix.client.profile}")
+    private String prefix;
 
-	@Autowired
-	private CidadeRepository cidadeRepository;
+    @Autowired
+    private ClienteRepository repository;
 
-	@Autowired
-	private EnderecoRepository enderecoRepository;
+    @Autowired
+    private CidadeRepository cidadeRepository;
 
-	@Autowired
-	S3Service s3Service;
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
-	@Autowired
-	private BCryptPasswordEncoder pe;
+    @Autowired
+    private S3Service s3Service;
 
-	public Cliente find(Integer id) {
-		UserSS usuarioLogado = UserService.authenticated();
+    @Autowired
+    private ImagemService imagemService;
 
-		if (usuarioLogado == null || !usuarioLogado.hasRole(PerfilEnum.ADMIN) && !usuarioLogado.getId().equals(id)){
-				throw new AuthorizationException("Acesso negado");
-		}
+    @Autowired
+    private BCryptPasswordEncoder pe;
 
-		Optional<Cliente> cliente = repository.findById(id);
+    public Cliente find(Integer id) {
+        UserSS usuarioLogado = UserService.authenticated();
 
-		return cliente.orElseThrow(() -> new ObjectNotFoundException(
-				"Cliente não encontrado ID: " + id + ", Tipo" + Cliente.class.getName()));
-	}
+        if (usuarioLogado == null || !usuarioLogado.hasRole(PerfilEnum.ADMIN) && !usuarioLogado.getId().equals(id)) {
+            throw new AuthorizationException("Acesso negado");
+        }
 
-	@Transactional
-	public Cliente insert(Cliente obj) {
-		obj.setId(null);
-		obj = repository.save(obj);
-		enderecoRepository.saveAll(obj.getEnderecos());
-		return obj;
-	}
+        Optional<Cliente> cliente = repository.findById(id);
 
-	public Cliente update(Cliente obj) {
-		Cliente newObjt = find(obj.getId());
-		updateData(newObjt, obj);
-		return repository.save(newObjt);
-	}
+        return cliente.orElseThrow(() -> new ObjectNotFoundException(
+                "Cliente não encontrado ID: " + id + ", Tipo" + Cliente.class.getName()));
+    }
 
-	public void delete(Integer id) {
-		find(id); // caso o id não exista ja despera a excessão
-		try {
-			repository.deleteById(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionadas");
-		}
+    @Transactional
+    public Cliente insert(Cliente obj) {
+        obj.setId(null);
+        obj = repository.save(obj);
+        enderecoRepository.saveAll(obj.getEnderecos());
+        return obj;
+    }
 
-	}
+    public Cliente update(Cliente obj) {
+        Cliente newObjt = find(obj.getId());
+        updateData(newObjt, obj);
+        return repository.save(newObjt);
+    }
 
-	public List<Cliente> findAll() {
-		return repository.findAll();
-	}
+    public void delete(Integer id) {
+        find(id); // caso o id não exista ja despera a excessão
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionadas");
+        }
 
-	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		return repository.findAll(pageRequest);
-	}
+    }
 
-	public Cliente fromDto(ClienteDTO objDto) {
-		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
-	}
+    public List<Cliente> findAll() {
+        return repository.findAll();
+    }
 
-	public Cliente fromDto(ClienteNewDTO objDto) {
-		Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
-				TipoClienteEnum.toEnum(objDto.getTipoCliente()), pe.encode(objDto.getSenha()));
-		
-		Optional<Cidade> codCidade = cidadeRepository.findById(objDto.getCidadeId());
-		
-		Endereco endereco = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
-				objDto.getBairro(), objDto.getCep(), cliente, codCidade.get());
+    public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+        return repository.findAll(pageRequest);
+    }
 
-		cliente.getEnderecos().add(endereco);
-		cliente.getTelefones().add(objDto.getTelefone1());
-		
-		if(objDto.getTelefone2() != null) {
-			cliente.getTelefones().add(objDto.getTelefone2());
-		}
-		
-		if(objDto.getTelefone3() != null) {
-			cliente.getTelefones().add(objDto.getTelefone3());
-		}
-		
-		return cliente;
-	}
+    public Cliente fromDto(ClienteDTO objDto) {
+        return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
+    }
 
-	private void updateData(Cliente newObjt, Cliente obj) {
-		newObjt.setNome(obj.getNome());
-		newObjt.setEmail(obj.getEmail());
-	}
+    public Cliente fromDto(ClienteNewDTO objDto) {
+        Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
+                TipoClienteEnum.toEnum(objDto.getTipoCliente()), pe.encode(objDto.getSenha()));
 
-	public URI uploadProfilePicture(MultipartFile multipartFile){
-		UserSS user = UserService.authenticated();
-		if (user == null){
-			throw new AuthorizationException("Acesso negado, usuário não está logado");
-		}
+        Optional<Cidade> codCidade = cidadeRepository.findById(objDto.getCidadeId());
 
-		URI uri = s3Service.uploadFile(multipartFile);
+        Endereco endereco = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
+                objDto.getBairro(), objDto.getCep(), cliente, codCidade.get());
 
-		var cliente = repository.findById(user.getId()).get();
+        cliente.getEnderecos().add(endereco);
+        cliente.getTelefones().add(objDto.getTelefone1());
 
-		cliente.setImageUrl(uri.toString());
-		repository.save(cliente);
-		return uri;
-	}
+        if (objDto.getTelefone2() != null) {
+            cliente.getTelefones().add(objDto.getTelefone2());
+        }
+
+        if (objDto.getTelefone3() != null) {
+            cliente.getTelefones().add(objDto.getTelefone3());
+        }
+
+        return cliente;
+    }
+
+    private void updateData(Cliente newObjt, Cliente obj) {
+        newObjt.setNome(obj.getNome());
+        newObjt.setEmail(obj.getEmail());
+    }
+
+    public URI uploadProfilePicture(MultipartFile multipartFile) {
+        UserSS user = UserService.authenticated();
+        if (user == null) {
+            throw new AuthorizationException("Acesso negado, usuário não está logado");
+        }
+
+        BufferedImage jpgImage = imagemService.getJpgImageFromFile(multipartFile);
+        String fileName = prefix + user.getId() + ".jpg";
+
+        return s3Service.uploadFile(imagemService.getInputStream(jpgImage, "jpg"), fileName, "image");
+    }
 }
