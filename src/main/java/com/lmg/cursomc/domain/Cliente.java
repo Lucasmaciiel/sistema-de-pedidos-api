@@ -1,11 +1,8 @@
 package com.lmg.cursomc.domain;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lmg.cursomc.domain.enums.PerfilEnum;
+import com.lmg.cursomc.domain.enums.TipoClienteEnum;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -17,10 +14,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lmg.cursomc.domain.enums.PerfilEnum;
-import com.lmg.cursomc.domain.enums.TipoClienteEnum;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Cliente implements Serializable {
@@ -155,6 +154,7 @@ public class Cliente implements Serializable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -179,6 +179,5 @@ public class Cliente implements Serializable {
 			return false;
 		return true;
 	}
-
 
 }
